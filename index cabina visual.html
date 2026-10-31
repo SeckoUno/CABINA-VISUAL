@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cabina Visual">
+<meta name="theme-color" content="#0c0b0a">
+<title>CABINA VISUAL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#0c0b0a;--ink2:#161513;--bone:#ebe3d3;--or:#ff5b1a;--mute:#8d8576;--line:#2c2926;--ok:#b9e05b;--err:#ff4a3d}
+html,body{background:var(--ink);color:var(--bone);font-family:Archivo,system-ui,sans-serif;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+body{padding:env(safe-area-inset-top) 0 calc(60px + env(safe-area-inset-bottom))}
+.wrap{max-width:820px;margin:0 auto;padding:0 16px}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.ht{background-image:radial-gradient(circle,rgba(235,227,211,.10) 1px,transparent 1.5px);background-size:6px 6px}
+header{position:relative;padding:26px 0 16px;border-bottom:2px solid var(--bone);overflow:hidden}
+header .dots{position:absolute;inset:0;background:radial-gradient(circle,var(--or) 1.3px,transparent 1.8px) 0 0/7px 7px;-webkit-mask-image:linear-gradient(105deg,transparent 40%,#000 100%);mask-image:linear-gradient(105deg,transparent 40%,#000 100%);opacity:.6;pointer-events:none}
+.logo{position:relative;font-weight:900;font-stretch:125%;font-size:clamp(50px,15vw,104px);line-height:.8;letter-spacing:-.045em;text-transform:uppercase}
+.logo span{display:inline-block;background:var(--or);color:var(--ink);padding:.02em .08em 0;margin-top:.05em}
+.sub{position:relative;margin-top:12px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.gear{position:absolute;right:0;top:24px;background:none;border:1.5px solid var(--bone);color:var(--bone);font:600 11px "IBM Plex Mono";letter-spacing:.1em;padding:8px 10px;text-transform:uppercase;cursor:pointer;z-index:2}
+nav.steps{position:sticky;top:0;z-index:30;background:var(--ink);display:flex;gap:6px;overflow-x:auto;padding:10px 0;border-bottom:1px solid var(--line);scrollbar-width:none}
+nav.steps::-webkit-scrollbar{display:none}
+nav.steps button{flex:0 0 auto;background:none;border:1.5px solid var(--line);color:var(--mute);font:700 12px Archivo;font-stretch:115%;text-transform:uppercase;letter-spacing:.03em;padding:9px 12px;cursor:pointer}
+nav.steps button i{font-style:normal;font-family:"IBM Plex Mono";font-weight:400;margin-right:6px}
+nav.steps button.on{background:var(--bone);color:var(--ink);border-color:var(--bone)}
+.step{display:none;padding:24px 0 10px}
+.step.on{display:block}
+h2{font-weight:900;font-stretch:122%;font-size:clamp(34px,9.5vw,62px);line-height:.86;letter-spacing:-.035em;text-transform:uppercase;margin-bottom:16px}
+h2 em{font-style:normal;color:var(--or)}
+h3{font-weight:900;font-stretch:120%;text-transform:uppercase;letter-spacing:-.02em}
+p.lead{color:var(--mute);font-size:15px;line-height:1.45;margin-bottom:10px}
+.k{display:block;font:600 11px "IBM Plex Mono";letter-spacing:.13em;text-transform:uppercase;color:var(--mute);margin:20px 0 7px}
+input[type=text],input[type=password],input[type=number],textarea,select{width:100%;background:var(--ink2);border:1.5px solid var(--line);color:var(--bone);font:16px Archivo;padding:12px;border-radius:0;-webkit-appearance:none;appearance:none;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--or)}
+textarea{min-height:92px;resize:vertical;line-height:1.4}
+textarea.lyr{min-height:220px;font:13px/1.55 "IBM Plex Mono"}
+select{background-image:linear-gradient(45deg,transparent 50%,var(--bone) 50%),linear-gradient(135deg,var(--bone) 50%,transparent 50%);background-position:calc(100% - 18px) 52%,calc(100% - 12px) 52%;background-size:6px 6px;background-repeat:no-repeat}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--bone);color:var(--ink);font:800 15px Archivo;font-stretch:112%;text-transform:uppercase;letter-spacing:.02em;padding:14px 18px;border:0;cursor:pointer;border-radius:0}
+.btn.or{background:var(--or)}
+.btn.ghost{background:transparent;color:var(--bone);border:1.5px solid var(--bone)}
+.btn.sm{padding:8px 10px;font-size:12px}
+.btn.full{width:100%}
+.btn:disabled{opacity:.35;pointer-events:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.mt{margin-top:18px}
+.drop{border:2px dashed var(--mute);padding:38px 16px;text-align:center;position:relative;cursor:pointer}
+.drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.drop b{display:block;font-weight:900;font-stretch:125%;font-size:28px;text-transform:uppercase;letter-spacing:-.02em}
+.drop small{font:12px "IBM Plex Mono";color:var(--mute)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border:1.5px solid var(--bone);margin-top:16px}
+.stats div{padding:12px;border-right:1.5px solid var(--bone)}
+.stats div:last-child{border-right:0}
+.stats small{display:block;font:600 10px "IBM Plex Mono";letter-spacing:.13em;color:var(--mute);text-transform:uppercase}
+.stats b{display:block;font-weight:900;font-stretch:120%;font-size:28px;margin-top:4px}
+.stats input{background:none;border:0;padding:0;font-weight:900;font-stretch:120%;font-size:28px;margin-top:4px;width:100%}
+canvas#energy{width:100%;height:64px;display:block;margin-top:12px}
+audio{width:100%;margin-top:12px}
+.note{font:12px/1.5 "IBM Plex Mono";color:var(--mute);margin-top:8px}
+.note b{color:var(--bone)}
+.cards{display:grid;gap:12px;grid-template-columns:1fr}
+@media(min-width:640px){.cards.two{grid-template-columns:1fr 1fr}}
+.type{border:2px solid var(--line);padding:18px;cursor:pointer;position:relative;min-height:190px;display:flex;flex-direction:column;justify-content:flex-end;background:var(--ink2);overflow:hidden}
+.type .n{position:absolute;top:14px;left:18px;font:600 11px "IBM Plex Mono";letter-spacing:.13em;color:var(--mute)}
+.type .big{position:absolute;right:-6px;top:-18px;font-weight:900;font-stretch:125%;font-size:120px;line-height:1;color:var(--line)}
+.type h3{position:relative;font-size:34px;line-height:.88;margin-bottom:8px}
+.type p{position:relative;font-size:14px;line-height:1.4;color:var(--mute)}
+.type.on{border-color:var(--or);background:var(--ink2) radial-gradient(circle,rgba(255,91,26,.28) 1.2px,transparent 1.7px) 0 0/7px 7px}
+.type.on .big{color:var(--or);opacity:.35}
+.type.on h3{color:var(--or)}
+.sub-panel{display:none;margin-top:6px}
+.sub-panel.on{display:block}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{border:1.5px solid var(--line);background:none;color:var(--bone);padding:9px 12px;font:700 13px Archivo;font-stretch:110%;text-transform:uppercase;cursor:pointer;text-align:left}
+.chip small{display:block;font:400 11px Archivo;text-transform:none;color:var(--mute);margin-top:2px;max-width:240px}
+.chip.on{background:var(--bone);color:var(--ink);border-color:var(--bone)}
+.chip.on small{color:#4a453d}
+.thumbs{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.thumbs .t{width:76px;height:76px;background:#000 center/cover;position:relative;border:1.5px solid var(--bone)}
+.thumbs .t button{position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:50%;border:0;background:var(--or);color:var(--ink);font-weight:900;cursor:pointer}
+.thumbs label{width:76px;height:76px;border:1.5px dashed var(--mute);display:flex;align-items:center;justify-content:center;font-size:30px;color:var(--mute);position:relative;cursor:pointer}
+.thumbs label input{position:absolute;inset:0;opacity:0}
+.concept{border:2px solid var(--bone);padding:18px;position:relative}
+.concept h3{font-size:clamp(28px,7vw,44px);line-height:.9;margin-bottom:10px}
+.concept p{font-size:15px;line-height:1.5;margin-bottom:10px}
+.concept .lbl{font:600 10px "IBM Plex Mono";letter-spacing:.13em;color:var(--or);text-transform:uppercase;display:block;margin:12px 0 4px}
+.pal{display:flex;height:30px;margin-top:6px;border:1px solid var(--line)}
+.pal div{flex:1}
+.tl{display:flex;height:40px;margin-top:14px;border:1.5px solid var(--bone)}
+.tl div{overflow:hidden;font:600 9px "IBM Plex Mono";letter-spacing:.06em;text-transform:uppercase;padding:4px;border-right:1px solid var(--ink);white-space:nowrap}
+.shot{border-top:1px solid var(--line);padding:13px 0;display:grid;grid-template-columns:70px 1fr;gap:12px}
+.shot .tc{font:600 12px "IBM Plex Mono";color:var(--or)}
+.shot .tc span{display:block;color:var(--mute);font-weight:400;margin-top:3px}
+.shot p{font-size:14px;line-height:1.45}
+.shot .ly{font:12px/1.45 "IBM Plex Mono";color:var(--mute);margin-top:5px;font-style:italic}
+.tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
+.tag{font:600 10px "IBM Plex Mono";letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line);padding:2px 6px;color:var(--mute)}
+.tag.or{background:var(--or);border-color:var(--or);color:var(--ink)}
+.tag.bn{background:var(--bone);border-color:var(--bone);color:var(--ink)}
+.tag.run{border-color:var(--or);color:var(--or);animation:blink 1s infinite}
+.tag.ok{border-color:var(--ok);color:var(--ok)}
+.tag.err{border-color:var(--err);color:var(--err)}
+@keyframes blink{50%{opacity:.35}}
+.sum{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1.5px solid var(--line);margin:14px 0}
+.sum div{padding:10px;border-right:1px solid var(--line)}
+.sum div:last-child{border:0}
+.sum b{display:block;font-weight:900;font-stretch:120%;font-size:24px}
+.sum small{font:600 10px "IBM Plex Mono";letter-spacing:.1em;color:var(--mute);text-transform:uppercase}
+.board{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:640px){.board{grid-template-columns:1fr 1fr}}
+.board.vert{grid-template-columns:1fr 1fr}
+@media(min-width:640px){.board.vert{grid-template-columns:1fr 1fr 1fr}}
+.card{background:var(--ink2);border:1px solid var(--line);display:flex;flex-direction:column}
+.card .media{aspect-ratio:16/9;background:#000;position:relative;overflow:hidden}
+.board.vert .card .media{aspect-ratio:9/16}
+.card .media img,.card .media video{width:100%;height:100%;object-fit:cover;display:block}
+.card .ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;text-align:center}
+.card .ph b{font-weight:900;font-stretch:125%;font-size:44px;color:var(--line)}
+.card .ph span{font:11px "IBM Plex Mono";color:var(--mute)}
+.card .badge{position:absolute;left:8px;top:8px;background:var(--ink);font:600 11px "IBM Plex Mono";padding:3px 6px}
+.card .body{padding:10px 12px;flex:1;display:flex;flex-direction:column;gap:7px}
+.card .body p{font-size:13px;line-height:1.4}
+.card .err{font:11px "IBM Plex Mono";color:var(--err);word-break:break-word}
+.card .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
+.card details summary{font:600 11px "IBM Plex Mono";letter-spacing:.08em;color:var(--mute);cursor:pointer;text-transform:uppercase}
+.card details textarea{min-height:80px;font-size:13px;margin-top:6px}
+.card label.cb{font:600 11px "IBM Plex Mono";display:flex;align-items:center;gap:6px;color:var(--mute);text-transform:uppercase}
+.prog{height:6px;background:var(--line);margin-top:10px}
+.prog div{height:100%;width:0;background:var(--or);transition:width .3s}
+.stage{background:#000;margin-top:14px;display:flex;justify-content:center;border:1.5px solid var(--bone)}
+.stage canvas{display:block;max-width:100%;max-height:72vh;height:auto}
+.opt{display:flex;align-items:center;gap:10px;font-size:15px;padding:10px 0;border-bottom:1px solid var(--line)}
+.opt input{width:20px;height:20px;accent-color:var(--or)}
+.recbar{display:none;background:var(--or);color:var(--ink);font:700 13px Archivo;text-transform:uppercase;padding:10px 12px;margin-top:10px}
+.recbar.on{display:block}
+#result video{width:100%;max-height:70vh;background:#000;margin-top:12px}
+#toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translate(-50%,140%);background:var(--bone);color:var(--ink);font:600 13px "IBM Plex Mono";padding:12px 14px;max-width:min(92vw,520px);z-index:99;transition:transform .25s;box-shadow:0 0 0 2px var(--ink)}
+#toast.show{transform:translate(-50%,0)}
+#toast.err{background:var(--err);color:#fff}
+.modal{position:fixed;inset:0;background:rgba(12,11,10,.94);z-index:80;display:none;overflow:auto;padding:calc(20px + env(safe-area-inset-top)) 16px 40px}
+.modal.on{display:block}
+.modal .box{max-width:620px;margin:0 auto}
+.busy{display:none;font:600 12px "IBM Plex Mono";color:var(--or);margin-top:12px;animation:blink 1s infinite}
+.busy.on{display:block}
+hr{border:0;border-top:1px solid var(--line);margin:22px 0}
+a{color:var(--or)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="dots"></div>
+    <button class="gear" id="openSet">Ajustes</button>
+    <div class="logo">Cabina<br><span>Visual</span></div>
+    <div class="sub mono">Director de videoclips · Hip Hop / Rap / R&amp;B</div>
+  </header>
+
+  <nav class="steps">
+    <button data-go="rola" class="on"><i>01</i>Rola</button>
+    <button data-go="tipo"><i>02</i>Tipo</button>
+    <button data-go="dir"><i>03</i>Dirección</button>
+    <button data-go="tomas"><i>04</i>Tomas</button>
+    <button data-go="corte"><i>05</i>Corte</button>
+  </nav>
+
+  <!-- 01 ROLA -->
+  <section class="step on" id="s-rola">
+    <h2>Sube tu <em>rola</em></h2>
+    <p class="lead">El director la escucha: saca el BPM, la energía de cada parte y la letra con tiempos.</p>
+    <div class="drop ht">
+      <input type="file" id="audioIn" accept="audio/*,.mp3,.wav,.m4a,.aac,.flac">
+      <b id="dropT">Toca para elegir</b>
+      <small>MP3 · WAV · M4A</small>
+    </div>
+    <div id="songInfo" style="display:none">
+      <div class="stats">
+        <div><small>Duración</small><b id="stDur">—</b></div>
+        <div><small>BPM</small><input type="number" id="stBpm" step="0.1" inputmode="decimal"></div>
+        <div><small>Compás</small><b id="stBar">—</b></div>
+      </div>
+      <canvas id="energy"></canvas>
+      <audio id="player" controls playsinline></audio>
+      <div class="note" id="upst"></div>
+
+      <span class="k">Letra con tiempos</span>
+      <div class="row">
+        <button class="btn sm" id="btnTr">Transcribir con IA</button>
+        <select id="lang" style="width:auto;padding:8px 34px 8px 10px;font-size:14px">
+          <option value="es">Español</option><option value="en">Inglés</option><option value="auto">Auto</option>
+        </select>
+      </div>
+      <div class="busy" id="trBusy">Escuchando la letra…</div>
+      <textarea class="lyr mt" id="lyrics" placeholder="[0:12.0] Primera línea del verso&#10;[0:15.4] Segunda línea…&#10;&#10;Transcribe con IA y corrige lo que no haya entendido, o pega tu letra. Las marcas [m:ss] le dicen al director cuándo cae cada línea."></textarea>
+
+      <span class="k">¿Dónde se va a lanzar?</span>
+      <select id="platform">
+        <option value="youtube">YouTube · horizontal 16:9</option>
+        <option value="reels">Instagram Reels · vertical 9:16</option>
+        <option value="tiktok">TikTok · vertical 9:16</option>
+        <option value="shorts">YouTube Shorts · vertical 9:16</option>
+      </select>
+      <span class="k">¿De qué trata la rola?</span>
+      <textarea id="about" placeholder="La historia, el mensaje, de dónde sale. Ej: es sobre salir del barrio sin olvidar a los míos…"></textarea>
+      <span class="k">Ambiente, referencias y lo que tienes a la mano</span>
+      <textarea id="vibe" placeholder="Ej: noche, calles de Iztapalapa, luces de sodio, vibra noventera, tengo un carro clásico, mi crew, una azotea…"></textarea>
+      <button class="btn or full mt" data-go="tipo">Siguiente →</button>
+    </div>
+  </section>
+
+  <!-- 02 TIPO -->
+  <section class="step" id="s-tipo">
+    <h2>¿Qué tipo de video será <em>esta vez</em>?</h2>
+    <div class="cards two">
+      <div class="type" data-mode="protagonista">
+        <span class="n">OPCIÓN A</span><span class="big">A</span>
+        <h3>Protago&shy;nista</h3>
+        <p>Tú al frente. Subes tus fotos, la IA te pone en cada escena y sincroniza tus labios con la rola.</p>
+      </div>
+      <div class="type" data-mode="experimental">
+        <span class="n">OPCIÓN B</span><span class="big">B</span>
+        <h3>Experi&shy;mental</h3>
+        <p>Sin protagonista. Puro arte: metáforas de tu letra, texturas, lugares y símbolos al ritmo del beat.</p>
+      </div>
+    </div>
+
+    <div class="sub-panel" id="pProt">
+      <span class="k">Tus fotos (1 a 4) · cara clara, buena luz, tu outfit</span>
+      <div class="thumbs" id="thumbs"></div>
+      <div class="busy" id="phBusy">Subiendo foto…</div>
+      <span class="k">Tu look en el video (opcional)</span>
+      <input type="text" id="look" placeholder="Ej: chamarra de mezclilla, cadena de plata, gorra negra">
+      <span class="k">Enfoque</span>
+      <div class="chips" data-for="protagonista">
+        <button class="chip" data-style="auto">Que decida el director<small>Él elige según tu rola</small></button>
+        <button class="chip" data-style="performance">Performance<small>Tú rapeando en locaciones con presencia</small></button>
+        <button class="chip" data-style="narrativo">Narrativo<small>Una historia con inicio, conflicto y final</small></button>
+        <button class="chip" data-style="calle">Calle / documental<small>Crudo, cámara en mano, barrio real</small></button>
+      </div>
+    </div>
+
+    <div class="sub-panel" id="pExp">
+      <span class="k">Dirección artística</span>
+      <div class="chips" data-for="experimental">
+        <button class="chip" data-style="auto">Que decida el director<small>Él elige según tu rola</small></button>
+        <button class="chip" data-style="surreal">Surrealista<small>Escenas imposibles, simbolismo de sueño</small></button>
+        <button class="chip" data-style="calle_doc">Calle sin rostro<small>Lugares, gente anónima, detalles del barrio</small></button>
+        <button class="chip" data-style="ilustrado">Ilustrado<small>Look dibujado, pintado o animado</small></button>
+        <button class="chip" data-style="abstracto">Abstracto<small>Texturas, luz y color que respiran con el beat</small></button>
+      </div>
+    </div>
+
+    <button class="btn or full mt" id="btnDirect">Que el director arme el guion →</button>
+    <div class="busy" id="dirBusy">El director está escuchando tu rola y escribiendo el guion…</div>
+  </section>
+
+  <!-- 03 DIRECCIÓN -->
+  <section class="step" id="s-dir">
+    <h2>El <em>tratamiento</em></h2>
+    <div id="dirEmpty" class="lead">Todavía no hay guion. Sube tu rola, elige el tipo de video y deja que el director lo arme.</div>
+    <div id="dirBox" style="display:none">
+      <div class="concept ht" id="concept"></div>
+      <div class="sum" id="dirSum"></div>
+      <span class="k">Guion técnico · toma por toma</span>
+      <div id="shotList"></div>
+      <hr>
+      <span class="k">¿Algo que cambiar? Díselo al director</span>
+      <textarea id="notes" placeholder="Ej: más tomas en el carro, el coro más oscuro, que termine en la azotea…"></textarea>
+      <div class="row mt">
+        <button class="btn ghost" id="btnRedo">Rehacer guion</button>
+        <button class="btn or" data-go="tomas">Ir al storyboard →</button>
+      </div>
+      <div class="busy" id="redoBusy">Reescribiendo…</div>
+    </div>
+  </section>
+
+  <!-- 04 TOMAS -->
+  <section class="step" id="s-tomas">
+    <h2>Story&shy;board <em>y tomas</em></h2>
+    <p class="lead">Primero genera las imágenes y revísalas (rehaz las que no te convenzan). Cuando te guste el storyboard, anima las tomas. También puedes subir tu propio clip o foto a cualquier toma.</p>
+    <div class="sum" id="boardSum"></div>
+    <div class="row">
+      <button class="btn" id="btnImgs">1 · Generar storyboard</button>
+      <button class="btn or" id="btnVids">2 · Animar tomas</button>
+      <button class="btn ghost sm" id="btnStop">Parar</button>
+    </div>
+    <div class="prog"><div id="bProg"></div></div>
+    <div class="note" id="bStat"></div>
+    <div class="board mt" id="board"></div>
+    <input type="file" id="ownIn" accept="video/*,image/*" style="display:none">
+    <button class="btn or full mt" data-go="corte">Al corte final →</button>
+  </section>
+
+  <!-- 05 CORTE -->
+  <section class="step" id="s-corte">
+    <h2>Corte <em>final</em></h2>
+    <p class="lead">Junta todas las tomas al tiempo de tu rola con tu audio original. Si una toma no está animada usa su imagen con movimiento de cámara; así también puedes sacar un animatic antes de gastar en video.</p>
+    <div class="sum" id="cutSum"></div>
+    <div class="opt"><input type="checkbox" id="oLyr"><label for="oLyr">Letra en pantalla</label></div>
+    <div class="opt"><input type="checkbox" id="oGrain"><label for="oGrain">Grano de película</label></div>
+    <div class="row mt">
+      <button class="btn" id="btnPrep">Preparar corte</button>
+      <button class="btn ghost" id="btnPrev" disabled>▶ Vista previa</button>
+      <button class="btn or" id="btnRec" disabled>● Exportar video</button>
+      <button class="btn ghost sm" id="btnEnd">■ Parar</button>
+    </div>
+    <div class="prog"><div id="cProg"></div></div>
+    <div class="note" id="cStat"></div>
+    <div class="recbar" id="recbar">● Grabando <span id="ctime"></span> — no bloquees la pantalla ni cambies de app</div>
+    <div class="stage"><canvas id="stage" width="1280" height="720"></canvas></div>
+    <div id="result"></div>
+  </section>
+</div>
+
+<!-- AJUSTES -->
+<div class="modal" id="set">
+  <div class="box">
+    <h2>Ajus&shy;tes</h2>
+    <span class="k">API key de fal.ai</span>
+    <input type="password" id="sKey" placeholder="fal_…" autocomplete="off">
+    <div class="note">Se guarda solo en este teléfono. Es la misma que usas en Cabina.</div>
+    <span class="k">Director (modelo de texto)</span>
+    <input type="text" id="sLlmEp"><input type="text" id="sLlmModel" style="margin-top:6px">
+    <span class="k">Transcripción</span><input type="text" id="sWhisper">
+    <span class="k">Imagen (experimental / b-roll)</span><input type="text" id="sImg">
+    <span class="k">Imagen con tus fotos (protagonista)</span><input type="text" id="sEdit">
+    <span class="k">Imagen → video</span><input type="text" id="sVid">
+    <span class="k">Lip-sync</span><input type="text" id="sLip">
+    <span class="k">Tomas en paralelo</span>
+    <select id="sConc"><option>1</option><option>2</option><option>3</option><option>4</option></select>
+    <div class="row mt">
+      <button class="btn or" id="sSave">Guardar</button>
+      <button class="btn ghost" id="sClose">Cerrar</button>
+    </div>
+    <hr>
+    <div class="row">
+      <button class="btn ghost sm" id="sReset">Restaurar modelos</button>
+      <button class="btn ghost sm" id="sNew">Nuevo proyecto</button>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script type="module">
+import { fal } from "https://esm.sh/@fal-ai/client@1";
+
+/* ---------- utilidades ---------- */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt=t=>{t=Math.max(0,+t||0);const m=Math.floor(t/60);return m+":"+(t-m*60).toFixed(1).padStart(4,"0");};
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+function toast(m,err){const t=$("#toast");t.textContent=m;t.className="show"+(err?" err":"");clearTimeout(toast.h);toast.h=setTimeout(()=>t.className="",err?6500:3500);}
+function errMsg(e){const d=e?.body?.detail;if(d)return typeof d==="string"?d:JSON.stringify(d).slice(0,260);return e?.message||String(e);}
+const busy=(id,on)=>$(id).classList.toggle("on",!!on);
+function loadImg(src){return new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error("No cargó la imagen"));i.src=src;});}
+
+/* ---------- ajustes y proyecto ---------- */
+const DEF={key:"",llmEndpoint:"openrouter/router",llmModel:"google/gemini-2.5-flash",whisper:"fal-ai/whisper",
+  imgEndpoint:"fal-ai/flux/dev",editEndpoint:"fal-ai/nano-banana/edit",
+  vidEndpoint:"fal-ai/kling-video/v2.1/standard/image-to-video",lipEndpoint:"fal-ai/sync-lipsync",conc:2};
+let S={...DEF,...store.get("cv_settings",{})};
+const blank=()=>({audioUrl:null,audioName:"",duration:0,bpm:0,beatOffset:0,energy:[],lyrics:"",lang:"es",platform:"youtube",
+  about:"",vibe:"",mode:null,style:"auto",photos:[],look:"",direction:null,shots:[],render:{lyrics:false,grain:true}});
+let P={...blank(),...store.get("cv_project",{})};
+let audioFile=null, AB=null;
+const save=()=>store.set("cv_project",P);
+const isVert=()=>P.platform!=="youtube";
+
+function falReady(){if(!S.key){openSettings();throw new Error("Falta tu API key de fal.ai (Ajustes)");}fal.config({credentials:S.key});}
+async function run(ep,input){falReady();const r=await fal.subscribe(ep,{input,logs:false});return r.data;}
+async function up(blob){falReady();return await fal.storage.upload(blob);}
+
+/* ---------- navegación ---------- */
+function go(id){
+  $$(".step").forEach(s=>s.classList.toggle("on",s.id==="s-"+id));
+  $$("nav.steps button").forEach(b=>b.classList.toggle("on",b.dataset.go===id));
+  if(id==="dir")renderDir(); if(id==="tomas")renderBoard(); if(id==="corte")renderCut();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.addEventListener("click",e=>{const g=e.target.closest("[data-go]");if(g)go(g.dataset.go);});
+
+/* ---------- 01 ROLA ---------- */
+async function decode(blob){const C=window.AudioContext||window.webkitAudioContext;const c=new C();try{return await c.decodeAudioData(await blob.arrayBuffer());}finally{try{c.close()}catch(e){}}}
+async function getAudioBlob(){if(audioFile)return audioFile;if(!P.audioUrl)throw new Error("Primero sube tu canción");const r=await fetch(P.audioUrl);if(!r.ok)throw new Error("No pude bajar la canción, súbela otra vez");audioFile=await r.blob();return audioFile;}
+async function getAB(){if(AB)return AB;AB=await decode(await getAudioBlob());return AB;}
+async function ensureAudioUrl(){
+  if(P.audioUrl)return P.audioUrl;
+  if(!audioFile)throw new Error("Primero sube tu canción");
+  $("#upst").textContent="Subiendo canción a la nube…";
+  P.audioUrl=await up(audioFile);save();
+  $("#upst").textContent="Canción lista en la nube ✓";
+  return P.audioUrl;
+}
+
+function analyze(buf){
+  const sr=buf.sampleRate,fps=100,hop=Math.round(sr/fps),frames=Math.floor(buf.length/hop);
+  const a=buf.getChannelData(0),b=buf.numberOfChannels>1?buf.getChannelData(1):a;
+  const e=new Float32Array(frames),lin=new Float32Array(frames);
+  for(let f=0;f<frames;f++){let s=0;const o=f*hop;for(let i=0;i<hop;i+=2){const v=(a[o+i]+b[o+i])*.5;s+=v*v;}s/=hop/2;lin[f]=Math.sqrt(s);e[f]=Math.log(1e-7+s);}
+  const on=new Float32Array(frames);
+  for(let f=1;f<frames;f++)on[f]=Math.max(0,e[f]-e[f-1]);
+  // quitar media local para resaltar golpes
+  const w=20;let acc=0;const sm=new Float32Array(frames);
+  for(let f=0;f<frames;f++){acc+=on[f];if(f>=w)acc-=on[f-w];sm[f]=acc/Math.min(f+1,w);}
+  for(let f=0;f<frames;f++)on[f]=Math.max(0,on[f]-sm[f]);
+  const st=Math.floor(frames*.08),len=Math.min(frames-st,fps*150);
+  const minL=Math.round(fps*60/180),maxL=Math.round(fps*60/60);
+  const sc=[];let best=-1,bl=minL;
+  for(let L=minL;L<=maxL;L++){let s=0;for(let i=st;i<st+len-L;i++)s+=on[i]*on[i+L];
+    const bpm=60*fps/L,wgt=Math.exp(-.5*Math.pow(Math.log2(bpm/95)/.9,2));sc[L]=s*wgt;if(sc[L]>best){best=sc[L];bl=L;}}
+  let lag=bl;if(bl>minL&&bl<maxL){const y0=sc[bl-1],y1=sc[bl],y2=sc[bl+1],den=y0-2*y1+y2;if(den!==0)lag=bl+.5*(y0-y2)/den;}
+  let bpm=Math.round(600*fps/lag)/10;
+  const per=60*fps/bpm;let bp=0,bs=-1;
+  for(let ph=0;ph<per;ph++){let s=0;for(let k=ph;k<frames;k+=per)s+=on[Math.round(k)]||0;if(s>bs){bs=s;bp=ph;}}
+  const sec=Math.ceil(frames/fps),en=[];let mx=1e-9;
+  for(let i=0;i<sec;i++){let s=0,n=0;for(let f=i*fps;f<Math.min(frames,(i+1)*fps);f++){s+=lin[f];n++;}en.push(n?s/n:0);mx=Math.max(mx,en[i]);}
+  return {bpm,offset:bp/fps,energy:en.map(v=>+(v/mx).toFixed(3))};
+}
+function drawEnergy(){
+  const c=$("#energy"),r=window.devicePixelRatio||1,W=c.clientWidth,H=c.clientHeight;if(!W)return;
+  c.width=W*r;c.height=H*r;const g=c.getContext("2d");g.scale(r,r);g.clearRect(0,0,W,H);
+  const en=P.energy||[];if(!en.length)return;const bw=W/en.length;
+  en.forEach((v,i)=>{const h=Math.max(2,v*H);g.fillStyle=v>.75?"#ff5b1a":"#ebe3d3";g.globalAlpha=v>.75?1:.35+v*.5;g.fillRect(i*bw,H-h,Math.max(1,bw-1),h);});
+  g.globalAlpha=1;
+}
+function renderRola(){
+  const has=P.duration>0;$("#songInfo").style.display=has?"block":"none";
+  if(!has)return;
+  $("#dropT").textContent=P.audioName||"Tu rola";
+  $("#stDur").textContent=fmt(P.duration).replace(/\.\d$/,"");
+  $("#stBpm").value=P.bpm;$("#stBar").textContent=P.bpm?(240/P.bpm).toFixed(2)+"s":"—";
+  const pl=$("#player");if(!pl.src){if(audioFile)pl.src=URL.createObjectURL(audioFile);else if(P.audioUrl)pl.src=P.audioUrl;}
+  $("#lyrics").value=P.lyrics||"";$("#lang").value=P.lang;$("#platform").value=P.platform;$("#about").value=P.about;$("#vibe").value=P.vibe;
+  if(P.audioUrl)$("#upst").textContent="Canción lista en la nube ✓";
+  requestAnimationFrame(drawEnergy);
+}
+$("#audioIn").addEventListener("change",async e=>{
+  const f=e.target.files[0];if(!f)return;
+  if(P.shots.length&&!confirm("¿Empezar con esta canción? Se borra el guion y las tomas actuales."))return;
+  audioFile=f;AB=null;$("#player").removeAttribute("src");
+  Object.assign(P,{audioUrl:null,audioName:f.name.replace(/\.[^.]+$/,""),lyrics:"",direction:null,shots:[]});
+  $("#dropT").textContent="Analizando…";
+  try{
+    AB=await decode(f);const a=analyze(AB);
+    Object.assign(P,{duration:AB.duration,bpm:a.bpm,beatOffset:a.offset,energy:a.energy});save();renderRola();
+    if(S.key)ensureAudioUrl().catch(err=>toast(errMsg(err),1));else $("#upst").textContent="Pon tu API key de fal en Ajustes para transcribir y dirigir.";
+  }catch(err){$("#dropT").textContent="Toca para elegir";toast("No pude leer ese audio: "+errMsg(err),1);}
+});
+$("#stBpm").addEventListener("change",e=>{const v=+e.target.value;if(v>40&&v<220){P.bpm=v;save();$("#stBar").textContent=(240/v).toFixed(2)+"s";}});
+for(const [id,k] of [["lyrics","lyrics"],["about","about"],["vibe","vibe"],["look","look"]])$("#"+id).addEventListener("input",e=>{P[k]=e.target.value;save();});
+$("#lang").addEventListener("change",e=>{P.lang=e.target.value;save();});
+$("#platform").addEventListener("change",e=>{P.platform=e.target.value;save();});
+window.addEventListener("resize",()=>drawEnergy());
+
+$("#btnTr").addEventListener("click",async()=>{
+  const b=$("#btnTr");b.disabled=true;busy("#trBusy",1);
+  try{
+    const url=await ensureAudioUrl();
+    const inp={audio_url:url,task:"transcribe",chunk_level:"segment"};if(P.lang!=="auto")inp.language=P.lang;
+    const d=await run(S.whisper,inp);
+    const ch=(d.chunks||[]).filter(c=>(c.text||"").trim());
+    P.lyrics=ch.length?ch.map(c=>`[${fmt(c.timestamp?.[0]??0)}] ${c.text.trim()}`).join("\n"):(d.text||"");
+    save();$("#lyrics").value=P.lyrics;toast("Letra lista. Corrige lo que haya entendido mal.");
+  }catch(e){toast(errMsg(e),1);}finally{b.disabled=false;busy("#trBusy",0);}
+});
+function parseLyrics(){
+  const out=[];for(const l of (P.lyrics||"").split("\n")){const m=l.match(/^\s*\[(\d+):(\d+(?:\.\d+)?)\]\s*(.*)$/);if(m&&m[3].trim())out.push({s:+m[1]*60+ +m[2],t:m[3].trim()});}
+  out.sort((a,b)=>a.s-b.s);
+  for(let i=0;i<out.length;i++)out[i].e=i<out.length-1?Math.min(out[i+1].s,out[i].s+8):Math.min(P.duration||1e9,out[i].s+6);
+  return out;
+}
+
+/* ---------- 02 TIPO ---------- */
+function renderType(){
+  $$(".type").forEach(t=>t.classList.toggle("on",t.dataset.mode===P.mode));
+  $("#pProt").classList.toggle("on",P.mode==="protagonista");$("#pExp").classList.toggle("on",P.mode==="experimental");
+  $$(".chips[data-for] .chip").forEach(c=>c.classList.toggle("on",c.closest(".chips").dataset.for===P.mode&&c.dataset.style===P.style));
+  $("#look").value=P.look||"";
+  const th=$("#thumbs");
+  th.innerHTML=P.photos.map((u,i)=>`<div class="t" style="background-image:url('${esc(u)}')"><button data-rm="${i}">×</button></div>`).join("")+
+    (P.photos.length<4?`<label>+<input type="file" id="phIn" accept="image/*" multiple></label>`:"");
+}
+$$(".type").forEach(t=>t.addEventListener("click",()=>{if(P.mode!==t.dataset.mode){P.mode=t.dataset.mode;P.style="auto";save();renderType();}}));
+document.addEventListener("click",e=>{
+  const c=e.target.closest(".chips[data-for] .chip");if(c){P.style=c.dataset.style;save();renderType();}
+  const rm=e.target.closest("[data-rm]");if(rm){P.photos.splice(+rm.dataset.rm,1);save();renderType();}
+});
+async function shrink(file,max=1536){
+  const u=URL.createObjectURL(file);
+  try{const i=await loadImg(u);const r=Math.min(1,max/Math.max(i.naturalWidth,i.naturalHeight));const c=document.createElement("canvas");
+    c.width=Math.round(i.naturalWidth*r);c.height=Math.round(i.naturalHeight*r);c.getContext("2d").drawImage(i,0,0,c.width,c.height);
+    return await new Promise(res=>c.toBlob(res,"image/jpeg",.9));}finally{URL.revokeObjectURL(u);}
+}
+document.addEventListener("change",async e=>{
+  if(e.target.id!=="phIn")return;
+  const files=[...e.target.files].slice(0,4-P.photos.length);busy("#phBusy",1);
+  try{for(const f of files){const b=await shrink(f);P.photos.push(await up(new File([b],"foto.jpg",{type:"image/jpeg"})));save();renderType();}}
+  catch(err){toast(errMsg(err),1);}finally{busy("#phBusy",0);}
+});
+
+/* ---------- director ---------- */
+const SYS=`Eres "EL DIRECTOR", director de videoclips de hip hop, rap, trap, boom bap, drumless y R&B. Llevas años filmando para artistas independientes de México, Latinoamérica y EE.UU.; conoces la cultura, la calle, el graffiti, los lowriders, el barrio, la estética de los 90 y la actual, y traduces una letra a imágenes con intención, no con clichés.
+Trabajas con presupuesto cero: cada toma se fabrica con IA (primero una imagen fija, luego se anima de 5 a 10 segundos). Por eso:
+- Cada toma es UNA sola imagen clara con UNA acción o movimiento simple. Nada de cambios de escena dentro de una toma.
+- Nada de texto ni letreros legibles, logos, marcas registradas ni personas famosas reales en las imágenes.
+- Coherencia total: misma paleta, mismos motivos visuales, mismo vestuario y locaciones que regresan y evolucionan a lo largo del video.
+- Corta con el ritmo: tomas más cortas cuando sube la energía (coros, drops), más largas en intros, puentes y partes tranquilas.
+- La letra manda: el concepto y las imágenes nacen de lo que dice la canción, su tono y su contexto.
+Responde SOLO con un objeto JSON válido, sin texto antes ni después y sin markdown.`;
+const STYLES={
+  protagonista:{auto:"Que decida el director lo que mejor sirva a la canción.",performance:"Performance: el artista rapeando en locaciones con presencia, poca historia.",narrativo:"Narrativo: una historia con inicio, conflicto y final que el artista vive.",calle:"Calle / documental: crudo, cámara en mano, barrio real, su crew."},
+  experimental:{auto:"Que decida el director lo que mejor sirva a la canción.",surreal:"Surrealista: escenas imposibles, simbolismo de sueño.",calle_doc:"Calle sin rostro: lugares, gente anónima de espaldas o lejana, detalles del barrio.",ilustrado:"Ilustrado: look dibujado, pintado o animado a mano en TODAS las tomas.",abstracto:"Abstracto: texturas, luz, formas y color que respiran con la música."}
+};
+const PLAT={youtube:["YouTube (16:9 horizontal)","Composición cinematográfica horizontal; la intro puede respirar."],
+  reels:["Instagram Reels (9:16 vertical)","Composición centrada para vertical; los primeros 2 segundos deben enganchar con la imagen más fuerte; cortes ágiles."],
+  tiktok:["TikTok (9:16 vertical)","Composición centrada para vertical; gancho visual en los primeros 2 segundos; cortes rápidos."],
+  shorts:["YouTube Shorts (9:16 vertical)","Composición centrada para vertical; gancho en los primeros 2 segundos."]};
+function buildPrompt(notes){
+  const D=P.duration,bar=P.bpm?240/P.bpm:0,v=isVert();
+  const en=[];for(let i=0;i<P.energy.length;i+=2){const x=((P.energy[i]||0)+(P.energy[i+1]??P.energy[i]??0))/2;en.push(Math.min(9,Math.round(x*9)));}
+  const minN=Math.max(4,Math.ceil(D/(v?6:7))),maxN=Math.min(60,Math.max(minN+2,Math.ceil(D/(v?3.5:4))));
+  const mode=P.mode==="protagonista"
+   ?`PROTAGONISTA. El artista es el protagonista y aparece en pantalla; hay fotos suyas como referencia. Para sus tomas usa tipo "performance" (rapeando a cámara) o "historia" (actuando dentro del concepto), mezcladas con "broll" (lugares, detalles, objetos, ambiente sin él). En "prompt_imagen" de sus tomas llámalo exactamente "the person from the reference photos" y describe vestuario, pose, acción, escena, encuadre y luz, sin describir su cara. Marca "lipsync": true SOLO en tomas "performance" donde está rapeando una línea de la letra y su cara se ve de frente en plano medio o cerrado. Apunta a que 40-55% de las tomas sean suyas, con más performance en los coros.${P.look?" Su look: "+P.look+".":""}`
+   :`EXPERIMENTAL / ARTÍSTICO. No hay protagonista ni performance: nadie rapea a cámara y "lipsync" siempre es false. Construye el video con metáforas visuales de la letra, lugares, objetos, texturas, símbolos, arquitectura, naturaleza, siluetas anónimas o figuras de espaldas; usa tipos "broll" y "abstracto". Debe sentirse como una pieza de arte con motivos que se repiten y una progresión visual clara de principio a fin.`;
+  return `CANCIÓN: "${P.audioName}"
+DURACIÓN: ${D.toFixed(1)} s
+BPM: ${P.bpm||"desconocido"}${bar?` (1 compás = ${bar.toFixed(2)} s; primer beat en ${P.beatOffset.toFixed(2)} s)`:""}
+ENERGÍA cada 2 s (0 calmado – 9 máximo): ${en.join("")}
+
+LETRA CON TIEMPOS:
+${(P.lyrics||"").trim()||"(sin letra: guíate por la energía y el contexto)"}
+
+DE QUÉ TRATA (según el artista): ${P.about||"-"}
+AMBIENTE / REFERENCIAS / RECURSOS: ${P.vibe||"-"}
+PLATAFORMA: ${PLAT[P.platform][0]}. ${PLAT[P.platform][1]}
+TIPO DE VIDEO: ${mode}
+DIRECCIÓN ARTÍSTICA: ${STYLES[P.mode][P.style]||STYLES[P.mode].auto}
+${notes?"\nCAMBIOS QUE PIDE EL ARTISTA SOBRE LA VERSIÓN ANTERIOR: "+notes+"\n":""}
+TAREA: escribe el tratamiento y el guion técnico completo, cubriendo de 0 a ${D.toFixed(1)} s sin huecos. Entre ${minN} y ${maxN} tomas; ninguna dura más de 10 s ni menos de 1.5 s. Identifica intro, versos, coros, puente y outro con la letra y la energía.
+
+FORMATO JSON EXACTO:
+{"titulo":"nombre del concepto","concepto":"2-3 frases","tratamiento":"luz, lente, textura, color, época","paleta":["#hex","#hex","#hex","#hex"],"motivos":["motivo visual recurrente"],"estilo_prompt":"English style suffix for EVERY image (film stock/texture, lighting, grade, era)","secciones":[{"nombre":"Intro","inicio":0,"fin":10.5,"idea":"qué pasa"}],"tomas":[{"inicio":0,"fin":4.2,"seccion":"Intro","tipo":"performance|historia|broll|abstracto","plano":"close-up / plano medio / general / detalle / cenital…","camara":"dolly in lento / cámara en mano / estático…","descripcion":"en español, 1-2 frases de lo que se ve","prompt_imagen":"English, one single frame: subject, frozen action, framing, lens, light, location, wardrobe, color","prompt_movimiento":"English, short: camera move and what moves in the scene","lipsync":false}]}`;
+}
+function parseJSON(t){
+  t=String(t).replace(/```(?:json)?/g,"");const a=t.indexOf("{"),b=t.lastIndexOf("}");if(a<0||b<0)throw new Error("El director no respondió bien, intenta otra vez");
+  const s=t.slice(a,b+1);try{return JSON.parse(s);}catch(e){return JSON.parse(s.replace(/,\s*([}\]])/g,"$1"));}
+}
+function normalizeShots(raw){
+  const D=P.duration,bp=P.bpm?60/P.bpm:0,off=P.beatOffset||0;
+  const snap=t=>{t=Math.min(D,Math.max(0,+t||0));if(!bp)return t;return Math.min(D,Math.max(0,off+Math.round((t-off)/bp)*bp));};
+  const arr=raw.filter(s=>s&&isFinite(+s.inicio)).sort((a,b)=>+a.inicio-+b.inicio);
+  const out=[];
+  for(let i=0;i<arr.length;i++){const st=out.length?snap(arr[i].inicio):0;if(st>=D-.5)break;if(out.length&&st-out[out.length-1].start<1.2)continue;out.push({...arr[i],start:st});}
+  for(let i=0;i<out.length;i++)out[i].end=i<out.length-1?out[i+1].start:D;
+  const fin=[];
+  for(const s of out){const len=s.end-s.start;const n=Math.max(1,Math.ceil(len/9.5));
+    for(let k=0;k<n;k++)fin.push({...s,start:s.start+len*k/n,end:s.start+len*(k+1)/n});}
+  return fin.map((s,i)=>({id:i+1,start:+s.start.toFixed(3),end:+s.end.toFixed(3),seccion:s.seccion||"",tipo:s.tipo||"broll",plano:s.plano||"",camara:s.camara||"",
+    desc:s.descripcion||"",pImg:s.prompt_imagen||s.descripcion||"",pMov:s.prompt_movimiento||"slow cinematic camera movement",
+    lipsync:P.mode==="protagonista"&&!!s.lipsync,img:null,vid:null,lip:null,own:null,ownType:null,st:{},err:""}));
+}
+async function direct(notes,btn,bz){
+  if(!P.duration){toast("Primero sube tu canción",1);return go("rola");}
+  if(!P.mode){toast("Elige qué tipo de video será",1);return go("tipo");}
+  if(P.mode==="protagonista"&&!P.photos.length){toast("Sube al menos una foto tuya, o cambia a Experimental",1);return;}
+  if(P.shots.some(s=>s.img||s.vid||s.own)&&!confirm("Se arma un guion nuevo y se pierden las tomas generadas. ¿Le seguimos?"))return;
+  btn.disabled=true;busy(bz,1);
+  try{
+    const input={model:S.llmModel,system_prompt:SYS,prompt:buildPrompt(notes)};
+    let d;
+    try{d=await run(S.llmEndpoint,input);}
+    catch(e){if(S.llmEndpoint!=="fal-ai/any-llm"){d=await run("fal-ai/any-llm",input);}else throw e;}
+    const j=parseJSON(d.output??d.text??d.response??"");
+    if(!Array.isArray(j.tomas)||!j.tomas.length)throw new Error("El director no regresó tomas, intenta otra vez");
+    const {tomas,...rest}=j;P.direction=rest;P.shots=normalizeShots(tomas);save();go("dir");
+  }catch(e){toast(errMsg(e),1);}finally{btn.disabled=false;busy(bz,0);}
+}
+$("#btnDirect").addEventListener("click",e=>direct("",e.currentTarget,"#dirBusy"));
+$("#btnRedo").addEventListener("click",e=>direct($("#notes").value.trim(),e.currentTarget,"#redoBusy"));
+
+/* ---------- 03 DIRECCIÓN ---------- */
+const lyrFor=(sh,ch)=>ch.filter(c=>c.s<sh.end&&c.e>sh.start).map(c=>c.t).join(" / ");
+function counts(){
+  const sh=P.shots;return{n:sh.length,perf:sh.filter(s=>s.tipo==="performance"||s.tipo==="historia").length,lip:sh.filter(s=>s.lipsync).length,
+    img:sh.filter(s=>s.img||s.own).length,vid:sh.filter(s=>s.vid||s.ownType==="video").length,lipd:sh.filter(s=>s.lip).length};
+}
+function renderDir(){
+  const d=P.direction;$("#dirEmpty").style.display=d?"none":"block";$("#dirBox").style.display=d?"block":"none";if(!d)return;
+  const D=P.duration||1,secs=d.secciones||[];
+  $("#concept").innerHTML=`<span class="lbl">${P.mode==="protagonista"?"Protagonista":"Experimental"} · ${esc(PLAT[P.platform][0])}</span>
+    <h3>${esc(d.titulo||"Sin título")}</h3><p>${esc(d.concepto||"")}</p>
+    <span class="lbl">Tratamiento</span><p>${esc(d.tratamiento||"")}</p>
+    ${d.motivos?.length?`<span class="lbl">Motivos</span><p>${d.motivos.map(esc).join(" · ")}</p>`:""}
+    ${d.paleta?.length?`<span class="lbl">Paleta</span><div class="pal">${d.paleta.map(c=>`<div style="background:${esc(c)}"></div>`).join("")}</div>`:""}
+    ${secs.length?`<div class="tl">${secs.map((s,i)=>`<div style="flex:${Math.max(.5,(+s.fin-+s.inicio)/D*100)};background:${i%2?"#ff5b1a":"#ebe3d3"};color:#0c0b0a" title="${esc(s.idea)}">${esc(s.nombre)}</div>`).join("")}</div>`:""}`;
+  const c=counts();
+  $("#dirSum").innerHTML=`<div><b>${c.n}</b><small>Tomas</small></div><div><b>${c.perf}</b><small>Contigo</small></div><div><b>${c.lip}</b><small>Lip-sync</small></div>`;
+  const ch=parseLyrics();
+  $("#shotList").innerHTML=P.shots.map(s=>{const ly=lyrFor(s,ch);return `<div class="shot"><div class="tc">${String(s.id).padStart(2,"0")}<span>${fmt(s.start)}</span><span>${(s.end-s.start).toFixed(1)}s</span></div>
+    <div><div class="tags"><span class="tag bn">${esc(s.seccion)}</span><span class="tag">${esc(s.tipo)}</span>${s.plano?`<span class="tag">${esc(s.plano)}</span>`:""}${s.lipsync?'<span class="tag or">lip-sync</span>':""}</div>
+    <p>${esc(s.desc)}</p>${s.camara?`<div class="ly" style="font-style:normal">Cámara: ${esc(s.camara)}</div>`:""}${ly?`<div class="ly">“${esc(ly)}”</div>`:""}</div></div>`;}).join("");
+}
+
+/* ---------- 04 TOMAS ---------- */
+const pick=sh=>sh.own?{type:sh.ownType,url:sh.own}:sh.lip?{type:"video",url:sh.lip}:sh.vid?{type:"video",url:sh.vid}:sh.img?{type:"image",url:sh.img}:null;
+const byId=id=>P.shots.find(s=>s.id===+id);
+const usesRef=sh=>P.mode==="protagonista"&&P.photos.length&&(sh.lipsync||sh.tipo==="performance"||sh.tipo==="historia"||/reference photo/i.test(sh.pImg));
+function mediaHTML(sh){
+  const m=pick(sh);
+  const inner=m?(m.type==="video"?`<video src="${esc(m.url)}" ${sh.img?`poster="${esc(sh.img)}"`:""} muted playsinline loop controls preload="metadata"></video>`:`<img src="${esc(m.url)}" loading="lazy" alt="">`)
+    :`<div class="ph ht"><b>${String(sh.id).padStart(2,"0")}</b><span>${esc(sh.plano||sh.tipo)}</span></div>`;
+  return inner+`<span class="badge">${String(sh.id).padStart(2,"0")} · ${fmt(sh.start)}</span>`;
+}
+function tagsHTML(sh){
+  const t=[];const st=sh.st||{};
+  t.push(`<span class="tag bn">${esc(sh.seccion||"—")}</span>`);
+  if(sh.own)t.push('<span class="tag or">tu material</span>');
+  for(const [k,l] of [["img","imagen"],["vid","video"],["lip","lip-sync"]]){
+    if(st[k]==="run")t.push(`<span class="tag run">${l}…</span>`);else if(st[k]==="err")t.push(`<span class="tag err">${l} ✕</span>`);
+    else if((k==="img"&&sh.img)||(k==="vid"&&sh.vid)||(k==="lip"&&sh.lip))t.push(`<span class="tag ok">${l} ✓</span>`);
+  }
+  if(sh.lipsync&&!sh.lip&&st.lip!=="run"&&st.lip!=="err")t.push('<span class="tag">lip-sync pendiente</span>');
+  return t.join("");
+}
+function cardHTML(sh){
+  return `<div class="card" data-card="${sh.id}">
+   <div class="media">${mediaHTML(sh)}</div>
+   <div class="body">
+    <div class="tags">${tagsHTML(sh)}</div>
+    <p>${esc(sh.desc)}</p>
+    <div class="err">${esc(sh.err||"")}</div>
+    <details><summary>Editar prompts</summary>
+      <textarea data-f="pImg" data-id="${sh.id}">${esc(sh.pImg)}</textarea>
+      <textarea data-f="pMov" data-id="${sh.id}">${esc(sh.pMov)}</textarea>
+    </details>
+    ${P.mode==="protagonista"?`<label class="cb"><input type="checkbox" data-lipt="${sh.id}" ${sh.lipsync?"checked":""}> Lip-sync en esta toma</label>`:""}
+    <div class="acts">
+      <button class="btn sm" data-act="img" data-id="${sh.id}">${sh.img?"↻ Imagen":"Imagen"}</button>
+      <button class="btn sm or" data-act="vid" data-id="${sh.id}" ${sh.img?"":"disabled"}>${sh.vid?"↻ Animar":"Animar"}</button>
+      ${sh.lipsync?`<button class="btn sm ghost" data-act="lip" data-id="${sh.id}" ${sh.vid?"":"disabled"}>↻ Lip</button>`:""}
+      ${sh.own?`<button class="btn sm ghost" data-act="unown" data-id="${sh.id}">Quitar mío</button>`:`<button class="btn sm ghost" data-act="own" data-id="${sh.id}">Subir mío</button>`}
+    </div>
+   </div></div>`;
+}
+function updateCard(sh){
+  const c=$(`[data-card="${sh.id}"]`);if(!c)return;
+  c.querySelector(".media").innerHTML=mediaHTML(sh);c.querySelector(".tags").innerHTML=tagsHTML(sh);c.querySelector(".err").textContent=sh.err||"";
+  const acts=c.querySelector(".acts");const tmp=document.createElement("div");tmp.innerHTML=cardHTML(sh);acts.replaceWith(tmp.querySelector(".acts"));
+  boardSum();
+}
+function boardSum(){
+  const c=counts();
+  $("#boardSum").innerHTML=`<div><b>${c.img}/${c.n}</b><small>Imágenes</small></div><div><b>${c.vid}/${c.n}</b><small>Animadas</small></div><div><b>${c.lipd}/${c.lip}</b><small>Lip-sync</small></div>`;
+}
+function renderBoard(){
+  const b=$("#board");b.classList.toggle("vert",isVert());
+  if(!P.shots.length){b.innerHTML=`<p class="lead">Primero arma el guion en el paso 02.</p>`;$("#boardSum").innerHTML="";return;}
+  b.innerHTML=P.shots.map(cardHTML).join("");boardSum();
+}
+let saveT;
+document.addEventListener("input",e=>{const f=e.target.dataset?.f;if(!f)return;const sh=byId(e.target.dataset.id);if(sh){sh[f]=e.target.value;clearTimeout(saveT);saveT=setTimeout(save,400);}});
+document.addEventListener("change",e=>{const id=e.target.dataset?.lipt;if(!id)return;const sh=byId(id);sh.lipsync=e.target.checked;if(!sh.lipsync)sh.lip=null;save();updateCard(sh);});
+
+const ratio=()=>isVert()?"9:16":"16:9";
+async function genImage(sh){
+  const style=P.direction?.estilo_prompt||"";let d;
+  if(usesRef(sh)){
+    const prompt=`${sh.pImg}. ${style}. Keep the face, identity and skin tone of the person exactly as in the reference photos. ${isVert()?"Vertical 9:16 frame.":"Wide 16:9 cinematic frame."} No text, no logos.`;
+    try{d=await run(S.editEndpoint,{prompt,image_urls:P.photos,num_images:1,aspect_ratio:ratio()});}
+    catch(e){d=await run(S.editEndpoint,{prompt,image_urls:P.photos,num_images:1});}
+  }else{
+    d=await run(S.imgEndpoint,{prompt:`${sh.pImg}. ${style}. No text, no logos.`,image_size:isVert()?"portrait_16_9":"landscape_16_9",num_images:1});
+  }
+  const u=d?.images?.[0]?.url;if(!u)throw new Error("No llegó imagen");
+  sh.img=u;sh.vid=null;sh.lip=null;
+}
+async function genVideo(sh){
+  if(!sh.img)throw new Error("Primero genera la imagen");
+  const d=await run(S.vidEndpoint,{prompt:`${sh.pMov}. ${P.direction?.estilo_prompt||""}`.slice(0,2400),image_url:sh.img,duration:(sh.end-sh.start)>5.2?"10":"5"});
+  const u=d?.video?.url;if(!u)throw new Error("No llegó video");sh.vid=u;sh.lip=null;
+}
+function wavSlice(buf,t0,t1,rate=22050){
+  const sr=buf.sampleRate,a=buf.getChannelData(0),b=buf.numberOfChannels>1?buf.getChannelData(1):a;
+  const n=Math.max(1,Math.floor((t1-t0)*rate)),dv=new DataView(new ArrayBuffer(44+n*2));
+  const W=(o,s)=>{for(let i=0;i<s.length;i++)dv.setUint8(o+i,s.charCodeAt(i));};
+  W(0,"RIFF");dv.setUint32(4,36+n*2,true);W(8,"WAVE");W(12,"fmt ");dv.setUint32(16,16,true);dv.setUint16(20,1,true);dv.setUint16(22,1,true);
+  dv.setUint32(24,rate,true);dv.setUint32(28,rate*2,true);dv.setUint16(32,2,true);dv.setUint16(34,16,true);W(36,"data");dv.setUint32(40,n*2,true);
+  for(let i=0;i<n;i++){const j=Math.floor(t0*sr+i*sr/rate);const v=Math.max(-1,Math.min(1,((a[j]||0)+(b[j]||0))/2));dv.setInt16(44+i*2,v*32767,true);}
+  return new Blob([dv],{type:"audio/wav"});
+}
+async function genLip(sh){
+  if(!sh.vid)throw new Error("Primero anima la toma");
+  const buf=await getAB();const aurl=await up(new File([wavSlice(buf,sh.start,Math.min(P.duration,sh.end+.25))],`toma${sh.id}.wav`,{type:"audio/wav"}));
+  const d=await run(S.lipEndpoint,{video_url:sh.vid,audio_url:aurl,sync_mode:"cut_off"});
+  const u=d?.video?.url;if(!u)throw new Error("No llegó el lip-sync");sh.lip=u;
+}
+async function step(sh,k,fn){sh.st=sh.st||{};sh.st[k]="run";sh.err="";updateCard(sh);
+  try{await fn(sh);sh.st[k]="ok";}catch(e){sh.st[k]="err";sh.err=errMsg(e);throw e;}finally{save();updateCard(sh);}}
+const animate=async sh=>{if(!sh.vid)await step(sh,"vid",genVideo);if(sh.lipsync&&!sh.lip)await step(sh,"lip",genLip);};
+let stopFlag=false,queueOn=false;
+async function queue(items,fn,label){
+  if(queueOn)return toast("Ya hay una tanda corriendo");
+  if(!items.length)return toast("No hay tomas pendientes para "+label);
+  try{falReady();}catch(e){return toast(e.message,1);}
+  queueOn=true;stopFlag=false;let i=0,done=0,fail=0;const tot=items.length;
+  const prog=()=>{$("#bProg").style.width=(done/tot*100)+"%";$("#bStat").textContent=`${label}: ${done}/${tot}${fail?` · ${fail} con error (rehazlas una por una)`:""}`;};prog();
+  const worker=async()=>{while(i<items.length&&!stopFlag){const sh=items[i++];try{await fn(sh);}catch(e){fail++;}done++;prog();}};
+  await Promise.all(Array.from({length:+S.conc||2},worker));
+  queueOn=false;$("#bStat").textContent+=stopFlag?" · detenido":" · listo";
+}
+$("#btnImgs").addEventListener("click",()=>queue(P.shots.filter(s=>!s.img&&!s.own),sh=>step(sh,"img",genImage),"Storyboard"));
+$("#btnVids").addEventListener("click",()=>{
+  const items=P.shots.filter(s=>!s.own&&s.img&&(!s.vid||(s.lipsync&&!s.lip)));
+  const nv=items.filter(s=>!s.vid).length,nl=items.filter(s=>s.lipsync&&!s.lip).length;
+  if(items.length&&!confirm(`Se van a animar ${nv} tomas${nl?` y hacer ${nl} lip-syncs`:""}. Esto gasta créditos de fal. ¿Le damos?`))return;
+  queue(items,animate,"Animación");
+});
+$("#btnStop").addEventListener("click",()=>{stopFlag=true;toast("Se detiene al terminar las tomas en curso");});
+let ownTarget=null;
+document.addEventListener("click",async e=>{
+  const b=e.target.closest("[data-act]");if(!b)return;const sh=byId(b.dataset.id);if(!sh)return;const a=b.dataset.act;
+  try{
+    if(a==="img")await step(sh,"img",genImage);
+    else if(a==="vid"){sh.vid=null;await animate(sh);}
+    else if(a==="lip"){sh.lip=null;await step(sh,"lip",genLip);}
+    else if(a==="own"){ownTarget=sh;$("#ownIn").value="";$("#ownIn").click();}
+    else if(a==="unown"){sh.own=null;sh.ownType=null;save();updateCard(sh);}
+  }catch(err){toast(errMsg(err),1);}
+});
+$("#ownIn").addEventListener("change",async e=>{
+  const f=e.target.files[0],sh=ownTarget;if(!f||!sh)return;
+  sh.st=sh.st||{};sh.err="Subiendo tu material…";updateCard(sh);
+  try{const isV=f.type.startsWith("video");const blob=isV?f:await shrink(f,2048);sh.own=await up(isV?f:new File([blob],"toma.jpg",{type:"image/jpeg"}));sh.ownType=isV?"video":"image";sh.err="";}
+  catch(err){sh.err=errMsg(err);}save();updateCard(sh);
+});
+
+/* ---------- 05 CORTE ---------- */
+let R=null,PLAY=null;
+const sig=()=>JSON.stringify(P.shots.map(s=>pick(s)?.url||""))+P.platform;
+function renderCut(){
+  const sh=P.shots;const v=sh.filter(s=>pick(s)?.type==="video").length,im=sh.filter(s=>pick(s)?.type==="image").length;
+  $("#cutSum").innerHTML=`<div><b>${v}</b><small>Video</small></div><div><b>${im}</b><small>Imagen</small></div><div><b>${sh.length-v-im}</b><small>Vacías</small></div>`;
+  $("#oLyr").checked=!!P.render.lyrics;$("#oGrain").checked=!!P.render.grain;
+  const c=$("#stage");c.width=isVert()?720:1280;c.height=isVert()?1280:720;
+  if(R&&R.sig!==sig())R=null;$("#btnPrev").disabled=$("#btnRec").disabled=!R;
+}
+$("#oLyr").addEventListener("change",e=>{P.render.lyrics=e.target.checked;save();});
+$("#oGrain").addEventListener("change",e=>{P.render.grain=e.target.checked;save();});
+$("#btnPrep").addEventListener("click",async e=>{
+  if(!P.shots.length)return toast("Primero arma el guion",1);
+  const b=e.currentTarget;b.disabled=true;
+  try{
+    if(R){R.media.forEach(m=>m?.u&&URL.revokeObjectURL(m.u));URL.revokeObjectURL(R.audio);}
+    R=null;const media=[];let fails=0;
+    for(let i=0;i<P.shots.length;i++){
+      $("#cStat").textContent=`Bajando tomas ${i+1}/${P.shots.length}…`;$("#cProg").style.width=((i+1)/P.shots.length*100)+"%";
+      const m=pick(P.shots[i]);if(!m){media.push(null);continue;}
+      try{const r=await fetch(m.url);if(!r.ok)throw 0;const u=URL.createObjectURL(await r.blob());
+        media.push(m.type==="image"?{type:"image",el:await loadImg(u),u}:{type:"video",u});}catch(err){media.push(null);fails++;}
+    }
+    $("#cStat").textContent="Preparando audio…";
+    const audio=URL.createObjectURL(await getAudioBlob());
+    try{await document.fonts.load('900 64px "Archivo"');}catch(err){}
+    R={media,audio,sig:sig()};
+    $("#cStat").textContent=`Listo para cortar${fails?` · ${fails} tomas no bajaron (saldrán en negro)`:""}.`;
+    $("#btnPrev").disabled=$("#btnRec").disabled=false;
+  }catch(err){toast(errMsg(err),1);$("#cStat").textContent="";}finally{b.disabled=false;}
+});
+function pickMime(){if(!window.MediaRecorder?.isTypeSupported)return "";
+  return ["video/mp4;codecs=avc1.42E01E,mp4a.40.2","video/mp4","video/webm;codecs=vp9,opus","video/webm;codecs=vp8,opus","video/webm"].find(m=>MediaRecorder.isTypeSupported(m))||"";}
+let noise=null;
+function getNoise(){if(noise)return noise;noise=document.createElement("canvas");noise.width=noise.height=160;const g=noise.getContext("2d"),d=g.createImageData(160,160);
+  for(let i=0;i<d.data.length;i+=4){const v=Math.random()*255|0;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=255;}g.putImageData(d,0,0);return noise;}
+function cover(g,W,H,el,w0,h0,s=1,dx=0,dy=0){const r=Math.max(W/w0,H/h0)*s,w=w0*r,h=h0*r;g.drawImage(el,(W-w)/2+dx,(H-h)/2+dy,w,h);}
+function wrap(g,text,max){const words=text.split(/\s+/),lines=[];let l="";for(const w of words){const t=l?l+" "+w:w;if(g.measureText(t).width>max&&l){lines.push(l);l=w;}else l=t;}if(l)lines.push(l);return lines;}
+
+function play(record){
+  if(!R)return toast("Primero toca Preparar corte",1);
+  if(PLAY)PLAY.end();
+  const cv=$("#stage"),W=isVert()?720:1280,H=isVert()?1280:720;cv.width=W;cv.height=H;const g=cv.getContext("2d");
+  const audio=new Audio();audio.src=R.audio;audio.playsInline=true;audio.preload="auto";
+  const C=window.AudioContext||window.webkitAudioContext,ac=new C(),src=ac.createMediaElementSource(audio);src.connect(ac.destination);
+  let rec=null;const parts=[];
+  if(record){
+    if(!window.MediaRecorder||!cv.captureStream){toast("Este navegador no puede exportar video. Prueba con Safari actualizado o Chrome.",1);ac.close();return;}
+    const dest=ac.createMediaStreamDestination();src.connect(dest);
+    const ms=new MediaStream([...cv.captureStream(30).getVideoTracks(),...dest.stream.getAudioTracks()]);
+    const mime=pickMime();rec=new MediaRecorder(ms,mime?{mimeType:mime,videoBitsPerSecond:8e6}:{videoBitsPerSecond:8e6});
+    rec.ondataavailable=e=>{if(e.data&&e.data.size)parts.push(e.data);};
+    rec.onstop=()=>done(parts,rec.mimeType||mime||"video/webm");
+    $("#result").innerHTML="";
+  }
+  ac.resume&&ac.resume();
+  const shots=P.shots,media=R.media,chunks=P.render.lyrics?parseLyrics():[],grain=P.render.grain?getNoise():null;
+  const vids={};let cur=-1,raf=0,stopped=false;
+  const vidFor=i=>{if(vids[i])return vids[i];const m=media[i];if(!m||m.type!=="video")return null;
+    const v=document.createElement("video");v.muted=true;v.playsInline=true;v.setAttribute("playsinline","");v.preload="auto";v.src=m.u;v.load();vids[i]=v;return v;};
+  const release=i=>{const v=vids[i];if(v){v.pause();v.removeAttribute("src");v.load();delete vids[i];}};
+  const idxAt=t=>{for(let i=0;i<shots.length;i++)if(t<shots[i].end)return i;return shots.length-1;};
+  function placeholder(sh){g.fillStyle="#0c0b0a";g.fillRect(0,0,W,H);g.fillStyle="#2c2926";
+    for(let y=0;y<H;y+=12)for(let x=(y/12%2)*6;x<W;x+=12){g.beginPath();g.arc(x,y,1.6,0,7);g.fill();}
+    g.fillStyle="#ff5b1a";g.font=`900 ${W*.12|0}px Archivo`;g.textAlign="left";g.textBaseline="top";g.fillText(String(sh.id).padStart(2,"0"),W*.07,H*.08);
+    g.fillStyle="#ebe3d3";g.font=`600 ${W*.032|0}px "IBM Plex Mono"`;wrap(g,sh.desc||"",W*.84).slice(0,6).forEach((l,k)=>g.fillText(l,W*.07,H*.08+W*.15+k*W*.045));}
+  function lyric(t){const c=chunks.find(c=>t>=c.s&&t<c.e);if(!c)return;
+    const fs=(isVert()?W*.062:W*.036)|0;g.font=`900 ${fs}px Archivo`;g.textAlign="center";g.textBaseline="alphabetic";
+    const lines=wrap(g,c.t.toUpperCase(),W*.84).slice(-3);const y0=H*(isVert()?.8:.88)-(lines.length-1)*fs*1.08;
+    lines.forEach((l,k)=>{const y=y0+k*fs*1.08;g.lineJoin="round";g.lineWidth=fs*.18;g.strokeStyle="#0c0b0a";g.strokeText(l,W/2,y);g.fillStyle="#ebe3d3";g.fillText(l,W/2,y);});}
+  function draw(i,t){
+    const sh=shots[i],m=media[i],p=Math.min(1,Math.max(0,(t-sh.start)/Math.max(.1,sh.end-sh.start)));
+    if(m&&m.type==="video"){const v=vids[i];if(v&&v.readyState>=2&&v.videoWidth)cover(g,W,H,v,v.videoWidth,v.videoHeight);}
+    else if(m&&m.type==="image"){g.fillStyle="#000";g.fillRect(0,0,W,H);const zin=sh.id%2===1,s=zin?1.03+.09*p:1.12-.09*p,dx=((sh.id%3)-1)*W*.025*(p-.5);
+      cover(g,W,H,m.el,m.el.naturalWidth,m.el.naturalHeight,s,dx,0);}
+    else placeholder(sh);
+    if(chunks.length)lyric(t);
+    if(grain){g.save();g.globalAlpha=.07;g.translate(Math.random()*160|0,Math.random()*160|0);g.fillStyle=g.createPattern(grain,"repeat");g.fillRect(-160,-160,W+320,H+320);g.restore();}
+  }
+  function frame(){
+    if(stopped)return;const t=audio.currentTime,i=idxAt(t);
+    if(i!==cur){if(vids[cur])vids[cur].pause();cur=i;const v=vidFor(i);if(v){try{v.currentTime=0;}catch(e){}v.play().catch(()=>{});}
+      vidFor(i+1);Object.keys(vids).forEach(k=>{k=+k;if(k<i||k>i+1)release(k);});}
+    draw(i,t);$("#ctime").textContent=fmt(t)+" / "+fmt(P.duration);
+    $("#cProg").style.width=(t/(P.duration||1)*100)+"%";
+    raf=requestAnimationFrame(frame);
+  }
+  function end(){if(stopped)return;stopped=true;cancelAnimationFrame(raf);audio.pause();Object.keys(vids).forEach(k=>release(+k));
+    if(rec&&rec.state!=="inactive")rec.stop();setTimeout(()=>{try{ac.close()}catch(e){}},300);$("#recbar").classList.remove("on");PLAY=null;
+    $("#cStat").textContent=rec?"Cerrando el archivo…":"Vista previa terminada.";}
+  audio.onended=end;PLAY={end};
+  vidFor(0);
+  if(rec){rec.start(1000);$("#recbar").classList.add("on");}
+  $("#cStat").textContent=rec?"Grabando el corte en tiempo real…":"Reproduciendo vista previa…";
+  audio.play().then(()=>{raf=requestAnimationFrame(frame);}).catch(e=>{toast("No se pudo reproducir: "+errMsg(e),1);end();});
+}
+function done(parts,mime){
+  const blob=new Blob(parts,{type:mime.split(";")[0]}),url=URL.createObjectURL(blob),ext=mime.includes("mp4")?"mp4":"webm";
+  const name=(P.direction?.titulo||P.audioName||"videoclip").replace(/[^\w\-áéíóúñ ]/gi,"").trim().replace(/\s+/g,"_")||"videoclip";
+  $("#result").innerHTML=`<video src="${url}" controls playsinline></video>
+    <a class="btn or full mt" href="${url}" download="${esc(name)}.${ext}">Descargar ${ext.toUpperCase()} · ${(blob.size/1048576).toFixed(1)} MB</a>
+    <div class="note">En iPhone: abre el video, toca Compartir → <b>Guardar video</b> para mandarlo a Fotos.${ext==="webm"?" Este navegador grabó en WEBM; para MP4 usa Safari.":""}</div>`;
+  $("#cStat").textContent="¡Corte listo!";
+}
+$("#btnPrev").addEventListener("click",()=>play(false));
+$("#btnRec").addEventListener("click",()=>play(true));
+$("#btnEnd").addEventListener("click",()=>PLAY&&PLAY.end());
+
+/* ---------- ajustes ---------- */
+const SF={sKey:"key",sLlmEp:"llmEndpoint",sLlmModel:"llmModel",sWhisper:"whisper",sImg:"imgEndpoint",sEdit:"editEndpoint",sVid:"vidEndpoint",sLip:"lipEndpoint",sConc:"conc"};
+function openSettings(){for(const [id,k] of Object.entries(SF))$("#"+id).value=S[k];$("#set").classList.add("on");}
+$("#openSet").addEventListener("click",openSettings);
+$("#sClose").addEventListener("click",()=>$("#set").classList.remove("on"));
+$("#sSave").addEventListener("click",()=>{for(const [id,k] of Object.entries(SF))S[k]=$("#"+id).value.trim();S.conc=+S.conc||2;store.set("cv_settings",S);$("#set").classList.remove("on");toast("Ajustes guardados");
+  if(S.key&&audioFile&&!P.audioUrl)ensureAudioUrl().catch(e=>toast(errMsg(e),1));});
+$("#sReset").addEventListener("click",()=>{const k=$("#sKey").value;S={...DEF,key:k};openSettings();});
+$("#sNew").addEventListener("click",()=>{if(!confirm("¿Borrar este proyecto y empezar uno nuevo?"))return;P=blank();audioFile=null;AB=null;R=null;save();$("#player").removeAttribute("src");$("#dropT").textContent="Toca para elegir";$("#set").classList.remove("on");renderRola();renderType();go("rola");});
+
+/* ---------- inicio ---------- */
+renderRola();renderType();
+if(!S.key)setTimeout(()=>toast("Primero pon tu API key de fal.ai en Ajustes"),800);
+</script>
+</body>
+</html>
